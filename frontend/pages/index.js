@@ -7,20 +7,28 @@ import NewTransactionModal from "../components/transaction/NewTransactionModal";
 import TransactionsList from "../components/transaction/TransactionsList";
 import { useWallet } from "@solana/wallet-adapter-react";
 import TransactionQRModal from "../components/transaction/TransactionQRModal";
-import { transactions } from "../data/transactions";
+// import { transactions } from "../data/transactions";
 import { getAvatarUrl } from "../functions/getAvatarUrl";
 import { useCashApp } from "../hooks/cashapp";
 
 const Home = () => {
-  // const { connected, publicKey } = useWallet()
+  //const { connected, publicKey } = useWallet()
   //   const [userAddress, setUserAddress] = useState(
   //     "11111111111111111111111111111111"
   //   );
   // const [avatar, setAvatar] = useState("");
-  const [transactionQRModalOpen, setTransactionQRModalOpen] = useState(false);
-  const [newTransactionModalOpen, setNewTransactionModalOpen] = useState(false);
 
-  const { connected, publicKey, avatar, userAddress } = useCashApp();
+  const [transactionQRModalOpen, setTransactionQRModalOpen] = useState(false);
+
+  const {
+    connected,
+    publicKey,
+    avatar,
+    userAddress,
+    transactions,
+    newTransactionModalOpen,
+    setNewTransactionModalOpen,
+  } = useCashApp();
 
   return (
     <div className="flex min-h-screen ">
@@ -40,6 +48,7 @@ const Home = () => {
         <NavMenu connected={connected} publicKey={publicKey} />
 
         <Action setModalOpen={setNewTransactionModalOpen} />
+
         <NewTransactionModal
           modalOpen={newTransactionModalOpen}
           setModalOpen={setNewTransactionModalOpen}

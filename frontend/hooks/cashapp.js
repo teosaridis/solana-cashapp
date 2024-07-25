@@ -14,15 +14,29 @@ import {
 import BigNumber from "bignumber.js";
 
 export const useCashApp = () => {
-  const [avatar, setAvatar] = useState("");
+  const useLocalStorage = (storageKey, fallbackState) => {
+    const [value, setValue] = useState(
+      JSON.parse(localStorage.getItem(storageKey)) ?? fallbackState
+    );
 
+    useEffect(() => {
+      localStorage.setItem(storageKey, JSON.stringify(value));
+    }, [value, setValue]);
+
+    return [value, setValue];
+  };
+
+  const { connection } = useConnection();
+  const { connected, publicKey, sendTransaction } = useWallet();
+
+  const [avatar, setAvatar] = useState("");
   const [userAddress, setUserAddress] = useState(
     "11111111111111111111111111111111"
   );
-
   const [amount, setAmount] = useState(0);
-  const { connected, publicKey, sendTransaction } = useWallet();
-  const { connection } = useConnection();
+
+  const [transactions, setTransactions] = useLocalStorage("transactions", []);
+  const [newTransactionModalOpen, setNewTransactionModalOpen] = useState(false);
 
   const [receiver, setReceiver] = useState("");
   const [transactionPurpose, setTransactionPurpose] = useState("");
@@ -84,9 +98,32 @@ export const useCashApp = () => {
 
     const txnHash = await sendTransaction(transaction, connection);
 
-    console.log(txnHash);
-
     // Create transaction history object
+    const newID = (transactions.length + 1).toString();
+    const newTransaction = {
+      id: newID,
+      from: {
+        name: publicKey,
+        handle: publicKey,
+        avatar: avatar,
+        verified: true,
+      },
+      to: {
+        name: receiver,
+        handle: "-",
+        avatar: getAvatarUrl(receiver.toString()),
+        verified: false,
+      },
+      description: transactionPurpose,
+      transactionDate: new Date(),
+      status: "Completed",
+      amount: amount,
+      source: "-",
+      identifier: "-",
+    };
+
+    setNewTransactionModalOpen(false);
+    setTransactions([newTransaction, ...transactions]);
   };
 
   return {
@@ -101,5 +138,9 @@ export const useCashApp = () => {
     setReceiver,
     transactionPurpose,
     setTransactionPurpose,
+    transactions,
+    setTransactions,
+    newTransactionModalOpen,
+    setNewTransactionModalOpen,
   };
 };

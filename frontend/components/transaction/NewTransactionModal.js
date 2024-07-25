@@ -2,7 +2,7 @@ import { useState } from "react";
 import Modal from "../Modal";
 import { useCashApp } from "../../hooks/cashapp";
 
-const NewTransactionModal = ({ modalOpen, setModalOpen }) => {
+const NewTransactionModal = ({ modalOpen, setModalOpen, addTransaction }) => {
   //   const [amount, setAmount] = useState(0);
   //   const [receiver, setReceiver] = useState("");
   //   const [transactionPurpose, setTransactionPurpose] = useState("");
